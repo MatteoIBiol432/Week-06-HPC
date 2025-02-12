@@ -1,9 +1,11 @@
 ---
-title: "Untitled"
+title: "Week-06-HPC"
 author: "Matteo"
 date: "2025-02-11"
 output: html_document
 ---
+
+https://github.com/MatteoIBiol432/Week-06-HPC
 
 ```{r}
 library(doParallel)
@@ -16,7 +18,6 @@ num_cores <- detectCores()
 print(num_cores)
 ```
 16 Cores
-
 
 ```{r}
 start_time <- Sys.time()
@@ -32,7 +33,7 @@ print(time_taken)
 ```
 
 ```{r}
-theoretical_time <- time_taken / num_cores
+theoretical_time <- time_taken / (num_cores-1)
 print(theoretical_time)
 ```
 
@@ -52,5 +53,18 @@ time_taken_parallel <- end_time_parallel - start_time_parallel
 print(time_taken_parallel)
 
 parallel::stopCluster(Cores)
+```
+
+```{r}
+print(paste("Linear: ", time_taken, "Seconds"))
+print(paste("Parallel Theoretical: ", theoretical_time, "Seconds"))
+print(paste("Parallel: ", time_taken_parallel, "Seconds"))
+```
+
+```{r}
+speedup_parallel <- as.numeric(time_taken)/ as.numeric(time_taken_parallel)
+speedup_parallel_percentage <- (speedup_parallel - 1) * 100
+
+print(paste("The program was", round(speedup_parallel_percentage, 2), "% faster using parallel processing compared to serial processing."))
 ```
 
