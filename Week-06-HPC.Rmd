@@ -1,0 +1,56 @@
+---
+title: "Untitled"
+author: "Matteo"
+date: "2025-02-11"
+output: html_document
+---
+
+```{r}
+library(doParallel)
+library(parallel)
+library(foreach)
+```
+
+```{r}
+num_cores <- detectCores()
+print(num_cores)
+```
+16 Cores
+
+
+```{r}
+start_time <- Sys.time()
+
+for(i in 1:4000) {
+  sample_data <- rnorm(100000, mean = 10, sd = 3)
+  mean_val <- mean(sample_data)
+}
+
+end_time <- Sys.time()
+time_taken <- end_time - start_time
+print(time_taken)
+```
+
+```{r}
+theoretical_time <- time_taken / num_cores
+print(theoretical_time)
+```
+
+```{r}
+Cores <- parallel::makeCluster(num_cores - 1)
+doParallel::registerDoParallel(Cores)
+
+start_time_parallel <- Sys.time()
+
+foreach(i = 1:4000, .combine = c) %dopar% {
+  sample_data <- rnorm(100000, mean = 10, sd = 3)
+  mean_val <- mean(sample_data)
+}
+
+end_time_parallel <- Sys.time()
+time_taken_parallel <- end_time_parallel - start_time_parallel
+print(time_taken_parallel)
+
+parallel::stopCluster(Cores)
+```
+
